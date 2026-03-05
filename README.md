@@ -52,8 +52,8 @@ Data/
 
 Example:
 
-Data/worlds/my-dnd-world/speaking-status/AbC123XyZ/tokens/idle.jpg  
-Data/worlds/my-dnd-world/speaking-status/AbC123XyZ/tokens/chat.jpg
+Data/worlds/my-dnd-world/speaking-status-image/AbC123XyZ/tokens/idle.jpg  
+Data/worlds/my-dnd-world/speaking-status-image/AbC123XyZ/tokens/chat.jpg
 
 ---
 
