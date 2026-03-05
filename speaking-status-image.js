@@ -2,6 +2,9 @@ let speakingSocket
 
 Hooks.once("socketlib.ready", () => {
   function speak(userId, speaking) {
+	  
+	if (!canvas.scene?.getFlag("speaking-status-image", "enabled")) return;
+	
     let user = game.users.get(userId);
     let tokens = user.character?.getActiveTokens() ?? [];
 	
@@ -9,12 +12,6 @@ Hooks.once("socketlib.ready", () => {
 	
 	const IDLE_IMG = `${basePath}/idle.jpg`;
 	const CHAT_IMG = `${basePath}/chat.jpg`;
-	
-	const enabledScenes = game.settings.get("speaking-status-image", "enabledScenes")
-	.split(",")
-	.map(s => s.trim());
-
-	if (!enabledScenes.includes(canvas.scene.id)) return;
 	
     Hooks.call('changeSpeakingStatus', user, speaking)
     tokens.forEach(t => {
@@ -180,14 +177,6 @@ Hooks.once("init", async () => {
     requiresReload: false,
     onChange: (value)=>{}
   });
-  game.settings.register("speaking-status-image", "enabledScenes", {
-    name: "Scenes With Speaking Tokens",
-    hint: "Comma separated list of scene IDs where speaking token swapping is enabled.",
-    scope: "world",
-    config: true,
-    type: String,
-    default: ""
-  });
 });
 
 Hooks.on('renderSettingsConfig', (app, html, options)=>{
@@ -207,4 +196,34 @@ Hooks.on('renderSettingsConfig', (app, html, options)=>{
     input.val(this.value)
     game.user.speakingThreshold = this.value;
   })
-})
+});
+
+Hooks.on("renderSceneConfig", (app, html) => {
+  const $html = html?.find ? html : $(html);
+  const scene = app.document;
+  console.log("renderSceneConfig fired", { app, html, scene });
+
+  if (!scene) return;
+
+  const scope = "speaking-status-image";
+  const enabled = scene.getFlag(scope, "enabled") ?? false;
+
+  const block = `
+    <div class="form-group">
+      <label>Enable Speaking Token Images</label>
+      <div class="form-fields">
+        <input type="checkbox" name="flags.${scope}.enabled" ${enabled ? "checked" : ""}>
+      </div>
+      <p class="hint">If enabled, idle/chat token swapping runs on this scene.</p>
+    </div>
+  `;
+
+  // In V12, html is often the <form>. Make sure we target the form.
+  const $form = $html.is("form") ? $html : $html.find("form");
+
+  // Insert somewhere guaranteed: right after the Scene Name field
+  const $nameGroup = $form.find('input[name="name"]').closest(".form-group");
+
+  if ($nameGroup.length) $nameGroup.after(block);
+  else $form.append(block);
+});
