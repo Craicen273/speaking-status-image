@@ -25,7 +25,7 @@ Hooks.once("socketlib.ready", () => {
     if (tokenDoc.texture.src !== newImg) {
       tokenDoc.update({
         "texture.src": newImg
-      });
+      }, { animate: false });
     }
   });
   }
@@ -53,8 +53,8 @@ startMicrophoneMonitor = function () {
 
     // Tuning (works well in practice)
     const HYST_DB = 8;          // OFF threshold = ON - HYST_DB
-    const MIN_ON_MS = 250;      // don't allow OFF immediately after ON
-    const HANGOVER_MS = 700;    // must be quiet this long to turn OFF
+    const MIN_ON_MS = 100;      // don't allow OFF immediately after ON
+    const HANGOVER_MS = 350;    // must be quiet this long to turn OFF
     const NO_REPORT_OFF_MS = 1500;
 
     // Smoothing: higher = smoother (less mid-sentence drop), lower = snappier
