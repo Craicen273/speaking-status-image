@@ -6,7 +6,10 @@ Hooks.once("socketlib.ready", () => {
 	if (!canvas.scene?.getFlag("speaking-status-image", "enabled")) return;
 	
     let user = game.users.get(userId);
-    let tokens = user.character?.getActiveTokens() ?? [];
+    const tokens = (user.character?.getActiveTokens?.() ?? []).filter(t => {
+  		const tokenDoc = t.document ?? t;
+  		return tokenDoc.isOwner; // only tokens this client can update
+	});
 	
 	const basePath = `worlds/${game.world.id}/speaking-status-image/${user.id}/tokens`;
 	
