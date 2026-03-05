@@ -44,7 +44,7 @@ Inside your Foundry **Data** directory create the following structure:
 Data/
 └─ worlds/
    └─ <your-world-folder>/
-      └─ speaking-status/
+      └─ speaking-status-image/
          └─ <user-id>/
             └─ tokens/
                ├─ idle.jpg
