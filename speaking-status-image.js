@@ -10,7 +10,7 @@ Hooks.once("socketlib.ready", () => {
     let user = game.users.get(userId);
     let tokens = user.character?.getActiveTokens() ?? [];
 	
-	const basePath = `worlds/${game.world.id}/speaking-status/${user.id}/tokens`;
+	const basePath = `worlds/${game.world.id}/speaking-status-image/${user.id}/tokens`;
 	
 	const IDLE_IMG = `${basePath}/idle.jpg`;
 	const CHAT_IMG = `${basePath}/chat.jpg`;
