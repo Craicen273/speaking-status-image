@@ -1,10 +1,5 @@
 let speakingSocket
 
-const SPEAK_ON_DB  = -55;   // start speaking above this
-const SPEAK_OFF_DB = -60;   // stop speaking below this (lower = more stable)
-const HOLD_MS = 250;        // grace period after last "loud" sample
-const _swapNonce = new Map(); // tokenId -> number
-
 Hooks.once("socketlib.ready", () => {
   function speak(userId, speaking) {
     let user = game.users.get(userId);
@@ -14,6 +9,12 @@ Hooks.once("socketlib.ready", () => {
 	
 	const IDLE_IMG = `${basePath}/idle.jpg`;
 	const CHAT_IMG = `${basePath}/chat.jpg`;
+	
+	const enabledScenes = game.settings.get("speaking-status-image", "enabledScenes")
+	.split(",")
+	.map(s => s.trim());
+
+	if (!enabledScenes.includes(canvas.scene.id)) return;
 	
     Hooks.call('changeSpeakingStatus', user, speaking)
     tokens.forEach(t => {
@@ -179,14 +180,13 @@ Hooks.once("init", async () => {
     requiresReload: false,
     onChange: (value)=>{}
   });
-  game.settings.register("speaking-status-image", "worldName", {
-    name: "Token Image Folder",
-    hint: "World folder containing idle/chat token images. Example: 'speaking-status'.",
+  game.settings.register("speaking-status-image", "enabledScenes", {
+    name: "Scenes With Speaking Tokens",
+    hint: "Comma separated list of scene IDs where speaking token swapping is enabled.",
     scope: "world",
     config: true,
     type: String,
-    default: "speaking-status-image",
-    requiresReload: false
+    default: ""
   });
 });
 
