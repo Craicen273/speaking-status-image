@@ -73,7 +73,7 @@ Use the returned value as the folder name.
 
 Example folder:
 
-speaking-status/
+speaking-status-image/
    AbC123XyZ/
       tokens/
          idle.jpg
@@ -143,8 +143,8 @@ Kq91XkD73
 
 Folder layout:
 
-worlds/my-world/speaking-status/Kq91XkD73/tokens/idle.jpg  
-worlds/my-world/speaking-status/Kq91XkD73/tokens/chat.jpg
+worlds/my-world/speaking-status-image/Kq91XkD73/tokens/idle.jpg  
+worlds/my-world/speaking-status-image/Kq91XkD73/tokens/chat.jpg
 
 When the player speaks:
 
