@@ -1,6 +1,5 @@
 let speakingSocket
 
-const WORLD_NAME = "speaking-status-image"; // your world folder
 const SPEAK_ON_DB  = -55;   // start speaking above this
 const SPEAK_OFF_DB = -60;   // stop speaking below this (lower = more stable)
 const HOLD_MS = 250;        // grace period after last "loud" sample
@@ -11,7 +10,8 @@ Hooks.once("socketlib.ready", () => {
     let user = game.users.get(userId);
     let tokens = user.character?.getActiveTokens() ?? [];
 	
-	const basePath = `worlds/${WORLD_NAME}/${user.id}/tokens`;
+	const basePath = `worlds/${game.world.id}/speaking-status/${user.id}/tokens`;
+	
 	const IDLE_IMG = `${basePath}/idle.jpg`;
 	const CHAT_IMG = `${basePath}/chat.jpg`;
 	
@@ -178,6 +178,15 @@ Hooks.once("init", async () => {
     default: false,
     requiresReload: false,
     onChange: (value)=>{}
+  });
+  game.settings.register("speaking-status-image", "worldName", {
+    name: "Token Image Folder",
+    hint: "World folder containing idle/chat token images. Example: 'speaking-status'.",
+    scope: "world",
+    config: true,
+    type: String,
+    default: "speaking-status-image",
+    requiresReload: false
   });
 });
 
