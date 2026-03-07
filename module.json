@@ -4,7 +4,7 @@
   "title": "Speaking Status Image",
   "description": "Indicates when a player is speaking using the microphone. Swaps between an idle and chat image'",
   "authors": [{"name":"Craicen273"}],
-  "version": "1",
+  "version": "1.1",
   "socket": true,
   "compatibility": {
       "minimum": "10",
