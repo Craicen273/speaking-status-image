@@ -122,27 +122,43 @@ Typical values:
 If the module triggers too often, increase the value (toward 0).  
 If speech is not detected reliably, decrease the value.
 
+## Idle Image Format
 
+Controls the format used for the idle image. You can select from
+
+- webp
+- png
+- jpg
+- jpeg
+- webm
+
+Selecting webm will auto play it for you for an animated image.
+
+## Chat Image Format
+
+Controls the format used for the idle image. You can select from
+
+- webp
+- png
+- jpg
+- jpeg
+- webm
+
+Selecting webm will auto play it for you for an animated image.
 
 ---
 
 # Example Setup
 
-User ID:
-
-Kq91XkD73
-
-Folder layout:
-
+**User ID:** Kq91XkD73
+**Folder layout:**
 worlds/my-world/speaking-status-image/Kq91XkD73/tokens/idle.jpg  
 worlds/my-world/speaking-status-image/Kq91XkD73/tokens/chat.jpg
 
-When the player speaks:
-
+**When the player speaks:**
 idle.jpg → chat.jpg
 
-When they stop speaking:
-
+**When they stop speaking:**
 chat.jpg → idle.jpg
 
 ---
@@ -151,4 +167,4 @@ chat.jpg → idle.jpg
 
 - Each player must have their own folder.
 - Microphone permissions must be allowed in the browser.
-- The module works best with a headset microphone to reduce background noise.
+- There is no noise suppression built into the module, so handling ambient noise will rely on the microphone used and/or any application you have to handle your microphone inputs.
