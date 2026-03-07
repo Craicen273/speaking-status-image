@@ -121,17 +121,7 @@ Typical values:
 If the module triggers too often, increase the value (toward 0).  
 If speech is not detected reliably, decrease the value.
 
----
 
-## Token Indicator
-
-Displays a visible outline around the token when the player is speaking.
-
----
-
-## Round Token Indicator
-
-Uses a rounded border for the speaking indicator.
 
 ---
 
