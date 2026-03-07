@@ -153,14 +153,15 @@ Selecting webm will auto play it for you for an animated image.
 **User ID:** Kq91XkD73
 
 **Folder layout:**
+
 worlds/my-world/speaking-status-image/Kq91XkD73/tokens/idle.jpg  
-worlds/my-world/speaking-status-image/Kq91XkD73/tokens/chat.jpg
+worlds/my-world/speaking-status-image/Kq91XkD73/tokens/chat.webm
 
 **When the player speaks:**
-idle.jpg → chat.jpg
+idle.jpg → chat.webm
 
 **When they stop speaking:**
-chat.jpg → idle.jpg
+chat.webm → idle.jpg
 
 ---
 
