@@ -41,6 +41,8 @@ You must create the folder structure manually and place the token images in the 
 
 Inside your Foundry **Data** directory create the following structure:
 
+### Folder Structure
+```text
 Data/
 └─ worlds/
    └─ <your-world-folder>/
@@ -49,6 +51,7 @@ Data/
             └─ tokens/
                ├─ idle.jpg
                └─ chat.jpg
+```
 
 Example:
 
