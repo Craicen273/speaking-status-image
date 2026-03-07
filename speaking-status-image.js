@@ -2,47 +2,37 @@ let speakingSocket
 
 Hooks.once("socketlib.ready", () => {
   function speak(userId, speaking) {
-
-	  if (!canvas.scene?.getFlag("speaking-status-image", "enabled")) return;
-
-	  // Only the speaking user's client should run this
-	  if (game.user.id !== userId) return;
-
-	  // GM should never update tokens
-	  if (game.user.isGM) return;
-
+	  const scene = canvas.scene;
+	  if (!scene?.getFlag("speaking-status-image", "enabled")) return;
+	  if (game.user.id !== userId || game.user.isGM) return;
+	
 	  const actor = game.user.character;
 	  if (!actor) return;
 
+	  // Retrieve the formats chosen in the Scene Config
+	  const idleExt = scene.getFlag("speaking-status-image", "idleExt") || "jpg";
+	  const chatExt = scene.getFlag("speaking-status-image", "chatExt") || "jpg";
+
 	  const basePath = `worlds/${game.world.id}/speaking-status-image/${game.user.id}/tokens`;
+	  
+	  // Construct the path based on the user's setting
+	  const extension = speaking ? chatExt : idleExt;
+	  const fileName = speaking ? "chat" : "idle";
+	  const newImg = `${basePath}/${fileName}.${extension}`;
 
-	  const IDLE_IMG = `${basePath}/idle.jpg`;
-	  const CHAT_IMG = `${basePath}/chat.jpg`;
-
-	  const newImg = speaking ? CHAT_IMG : IDLE_IMG;
-
-	  // Find tokens on the scene representing this actor
-	  const tokens = canvas.tokens.placeables.filter(t =>
-		t.actor?.id === actor.id
-	  );
-
+	  const tokens = canvas.tokens.placeables.filter(t => t.actor?.id === actor.id);
+	  
 	  Hooks.call('changeSpeakingStatus', game.user, speaking);
 
 	  tokens.forEach(t => {
-
-		const tokenDoc = t.document;
-
-		if (tokenDoc.texture.src !== newImg) {
-		  tokenDoc.update({
-			"texture.src": newImg
-		  }, { animate: false });
+		if (t.document.texture.src !== newImg) {
+		  t.document.update({ "texture.src": newImg }, { animate: false });
 		}
-
 	  });
 	}
 	speakingSocket = socketlib.registerModule("speaking-status-image");
-	speakingSocket.register("speak", speak);
-	speakingSocket.emit = function(userId, speaking) { speakingSocket.executeForEveryone(speak, userId, speaking); }
+  speakingSocket.register("speak", speak);
+  speakingSocket.emit = function(userId, speaking) { speakingSocket.executeForEveryone(speak, userId, speaking); }
 });
 
 Hooks.on('ready',()=>{
@@ -215,29 +205,44 @@ Hooks.on('renderSettingsConfig', (app, html, options)=>{
 Hooks.on("renderSceneConfig", (app, html) => {
   const $html = html?.find ? html : $(html);
   const scene = app.document;
-  console.log("renderSceneConfig fired", { app, html, scene });
-
   if (!scene) return;
 
   const scope = "speaking-status-image";
   const enabled = scene.getFlag(scope, "enabled") ?? false;
+  
+  // Get current formats or default to jpg
+  const idleExt = scene.getFlag(scope, "idleExt") ?? "jpg";
+  const chatExt = scene.getFlag(scope, "chatExt") ?? "jpg";
+
+  const extensions = ["webp", "png", "jpg", "jpeg", "gif"];
+  const options = (selected) => extensions.map(ext => 
+    `<option value="${ext}" ${selected === ext ? "selected" : ""}>.${ext}</option>`
+  ).join("");
 
   const block = `
+    <hr>
     <div class="form-group">
       <label>Enable Speaking Token Images</label>
       <div class="form-fields">
         <input type="checkbox" name="flags.${scope}.enabled" ${enabled ? "checked" : ""}>
       </div>
-      <p class="hint">If enabled, idle/chat token swapping runs on this scene.</p>
+    </div>
+    <div class="form-group">
+      <label>Idle Image Format</label>
+      <div class="form-fields">
+        <select name="flags.${scope}.idleExt">${options(idleExt)}</select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Chat Image Format</label>
+      <div class="form-fields">
+        <select name="flags.${scope}.chatExt">${options(chatExt)}</select>
+      </div>
     </div>
   `;
 
-  // In V12, html is often the <form>. Make sure we target the form.
   const $form = $html.is("form") ? $html : $html.find("form");
-
-  // Insert somewhere guaranteed: right after the Scene Name field
   const $nameGroup = $form.find('input[name="name"]').closest(".form-group");
-
   if ($nameGroup.length) $nameGroup.after(block);
   else $form.append(block);
 });
