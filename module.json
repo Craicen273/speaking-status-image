@@ -8,7 +8,7 @@
   "socket": true,
   "compatibility": {
       "minimum": "10",
-      "verified": "12"
+      "verified": "13"
     },
   "scripts": ["speaking-status-image.js"],
   "relationships": {
