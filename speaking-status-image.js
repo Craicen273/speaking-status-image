@@ -25,8 +25,16 @@ Hooks.once("socketlib.ready", () => {
 	  Hooks.call('changeSpeakingStatus', game.user, speaking);
 
 	  tokens.forEach(t => {
-		if (t.document.texture.src !== newImg) {
-		  t.document.update({ "texture.src": newImg }, { animate: false });
+		const tokenDoc = t.document;
+		if (tokenDoc.texture.src !== newImg) {
+		  // 1. Update the document
+		  tokenDoc.update({ "texture.src": newImg }, { animate: false }).then(() => {
+			// 2. Use Foundry's VideoHelper to play it safely
+			const source = t.texture?.baseTexture?.resource?.source;
+			if (source instanceof HTMLVideoElement) {
+			  game.video.play(source, { loop: true, volume: 0 });
+			}
+		  }).catch(err => console.warn("Speaking Status | Update failed:", err));
 		}
 	  });
 	}
@@ -214,7 +222,7 @@ Hooks.on("renderSceneConfig", (app, html) => {
   const idleExt = scene.getFlag(scope, "idleExt") ?? "jpg";
   const chatExt = scene.getFlag(scope, "chatExt") ?? "jpg";
 
-  const extensions = ["webp", "png", "jpg", "jpeg", "gif"];
+  const extensions = ["webp", "png", "jpg", "jpeg", "webm"];
   const options = (selected) => extensions.map(ext => 
     `<option value="${ext}" ${selected === ext ? "selected" : ""}>.${ext}</option>`
   ).join("");
