@@ -67,8 +67,9 @@ Each player must have their own folder named after their **Foundry User ID**.
 To find your user ID:
 
 1. Open Foundry
-2. Press **F12** to open the browser console
-3. Run: game.user.id
+2. Sign into world
+3. Press **F12** to open the browser console
+4. Run: game.user.id
 
 Use the returned value as the folder name.
 
