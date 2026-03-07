@@ -2,37 +2,47 @@ let speakingSocket
 
 Hooks.once("socketlib.ready", () => {
   function speak(userId, speaking) {
-	  
-	if (!canvas.scene?.getFlag("speaking-status-image", "enabled")) return;
-	if (game.user.id !== userId) return;
-	
-    let user = game.users.get(userId);
-    const tokens = (user.character?.getActiveTokens?.() ?? []).filter(t => {
-  		const tokenDoc = t.document ?? t;
-  		return user.isOwner && tokenDoc.isOwner; // only tokens this client can update
-	});
-	
-	const basePath = `worlds/${game.world.id}/speaking-status-image/${user.id}/tokens`;
-	
-	const IDLE_IMG = `${basePath}/idle.jpg`;
-	const CHAT_IMG = `${basePath}/chat.jpg`;
-	
-    Hooks.call('changeSpeakingStatus', user, speaking)
-    tokens.forEach(t => {
-    const tokenDoc = t.document ?? t;
-    const newImg = speaking ? CHAT_IMG : IDLE_IMG;
 
-    // Only update if the image actually needs to change
-    if (tokenDoc.texture.src !== newImg) {
-      tokenDoc.update({
-        "texture.src": newImg
-      }, { animate: false });
-    }
-  });
-  }
-  speakingSocket = socketlib.registerModule("speaking-status-image");
-  speakingSocket.register("speak", speak);
-  speakingSocket.emit = function(userId, speaking) { speakingSocket.executeForEveryone(speak, userId, speaking); }
+	  if (!canvas.scene?.getFlag("speaking-status-image", "enabled")) return;
+
+	  // Only the speaking user's client should run this
+	  if (game.user.id !== userId) return;
+
+	  // GM should never update tokens
+	  if (game.user.isGM) return;
+
+	  const actor = game.user.character;
+	  if (!actor) return;
+
+	  const basePath = `worlds/${game.world.id}/speaking-status-image/${game.user.id}/tokens`;
+
+	  const IDLE_IMG = `${basePath}/idle.jpg`;
+	  const CHAT_IMG = `${basePath}/chat.jpg`;
+
+	  const newImg = speaking ? CHAT_IMG : IDLE_IMG;
+
+	  // Find tokens on the scene representing this actor
+	  const tokens = canvas.tokens.placeables.filter(t =>
+		t.actor?.id === actor.id
+	  );
+
+	  Hooks.call('changeSpeakingStatus', game.user, speaking);
+
+	  tokens.forEach(t => {
+
+		const tokenDoc = t.document;
+
+		if (tokenDoc.texture.src !== newImg) {
+		  tokenDoc.update({
+			"texture.src": newImg
+		  }, { animate: false });
+		}
+
+	  });
+	}
+	speakingSocket = socketlib.registerModule("speaking-status-image");
+	speakingSocket.register("speak", speak);
+	speakingSocket.emit = function(userId, speaking) { speakingSocket.executeForEveryone(speak, userId, speaking); }
 });
 
 Hooks.on('ready',()=>{
