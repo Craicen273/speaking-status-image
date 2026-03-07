@@ -68,9 +68,7 @@ To find your user ID:
 
 1. Open Foundry
 2. Press **F12** to open the browser console
-3. Run:
-
-game.user.id
+3. Run: game.user.id
 
 Use the returned value as the folder name.
 
