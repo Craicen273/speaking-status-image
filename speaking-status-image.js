@@ -20,7 +20,12 @@ Hooks.once("socketlib.ready", () => {
 	  const fileName = speaking ? "chat" : "idle";
 	  const newImg = `${basePath}/${fileName}.${extension}`;
 
-	  const tokens = canvas.tokens.placeables.filter(t => t.actor?.id === actor.id);
+	  const tokens = canvas.tokens.placeables.filter(t => { 
+		const isOwned = t.actor?.id === actor.id
+		const isEnabled = t.document.getFlag("speaking-status-image", "enabled");
+    
+		return isOwned && isEnabled;
+	  });
 	  
 	  Hooks.call('changeSpeakingStatus', game.user, speaking);
 
@@ -253,4 +258,19 @@ Hooks.on("renderSceneConfig", (app, html) => {
   const $nameGroup = $form.find('input[name="name"]').closest(".form-group");
   if ($nameGroup.length) $nameGroup.after(block);
   else $form.append(block);
+});
+
+Hooks.on("renderTokenConfig", (app, html, data) => {
+    // 'html' is a standard DOM element, so we use querySelector
+    const targetTab = html.querySelector('div[data-tab="identity"]');
+    
+    if (targetTab) {
+        const newConfig = document.createElement("div");
+        newConfig.classList.add("form-group");
+        newConfig.innerHTML = `
+            <label>Enable Speaking Image Swap</label>
+            <input type="checkbox" name="flags.speaking-status-image.enabled" ${app.document.getFlag("speaking-status-image", "enabled") ? 'checked' : ''}>
+        `;
+        targetTab.appendChild(newConfig);
+    }
 });
