@@ -4,7 +4,7 @@
   "title": "Speaking Status Image",
   "description": "Indicates when a player is speaking using the microphone. Swaps between an idle and chat image'",
   "authors": [{"name":"Craicen273"}],
-  "version": "1.1.0",
+  "version": "1.2.0",
   "socket": true,
   "compatibility": {
       "minimum": "10",
@@ -16,5 +16,5 @@
   },
   "url": "https://github.com/craicen273/speaking-status-image/",
   "manifest": "https://github.com/Craicen273/speaking-status-image/releases/latest/download/module.json",
-  "download": "https://github.com/Craicen273/speaking-status-image/releases/download/1.1.0/speaking-status-image.zip"
+  "download": "https://github.com/Craicen273/speaking-status-image/releases/download/1.2.0/speaking-status-image.zip"
 }
